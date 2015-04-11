@@ -1,6 +1,6 @@
 {
   "name": "q.level",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Promise'd LevelUp with Q, originally a fork of nathan7/level-promise.",
   "main": "index.js",
   "scripts": {
