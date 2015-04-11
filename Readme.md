@@ -3,7 +3,7 @@
 
 _originally a fork of [nathan7/level-promise](https://github.com/nathan7/level-promise)_
 
-  Promised LevelUp, using Q
+  Promisified level API with Q
 
 ## Installation
 
