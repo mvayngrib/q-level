@@ -3,7 +3,7 @@
 
 _originally a fork of [nathan7/level-promise](https://github.com/nathan7/level-promise)_
 
-  Promised LevelUp, using Q
+  Promisified level API with Q
 
 ## Installation
 
@@ -16,13 +16,13 @@ _originally a fork of [nathan7/level-promise](https://github.com/nathan7/level-p
   Play nice with the rest, use callbacks for your extension.
   If your extension works with level-manifest, it'll work with this.
 
-## Usage
+## What it does
 
-  `LevelPromise(db)` (or `LevelPromise.install(db)`, if that suits your tastes) and you're off!
-  Every method marked as async by level-manifest will now return a promise when you don't pass it a callback.
+  Every method marked as async by level-manifest will now return a promise when you don't pass it a callback. The methods that return readable streams will return streams augmented with Q's promise interface.
+
   It recurses into sublevels.
 
-## Examples
+## Usage
 
 ### Promises
 
