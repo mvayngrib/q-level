@@ -61,7 +61,7 @@ function _install(db, manifest) {
 function promisifyBatch(db) {
   var orig = db.batch.bind(db)
   db.batch = function() {
-    if (arguments.length) return Q.nfapply(orig, arguments)
+    if (arguments.length) return callSubstitute(this, orig, arguments)
     // TODO: remove throw err when https://github.com/dominictarr/level-hooks/issues/7 is resolved
     else throw new Error('chained form is not supported yet')
 
@@ -72,14 +72,24 @@ function promisifyBatch(db) {
 }
 
 function substitute(db, methodName) {
-  db[methodName] = Q.nbind(db[methodName], db)
+  var orig = db[methodName].bind(db)
+  db[methodName] = function() {
+    return callSubstitute(this, orig, arguments)
+  }
+}
+
+function callSubstitute(ctx, orig, args) {
+  if (typeof args[args.length - 1] === 'function')
+    return orig.apply(ctx, args)
+  else
+    return Q.nfapply(orig, args)
 }
 
 function fromStream(db, methodName) {
   var orig = db[methodName]
   db[methodName] = function() {
     var stream = orig.apply(this, arguments)
-    if (Q.isPromise(stream)) return stream
+    if (typeof stream.then === 'function') return stream
 
     var defer = Q.defer()
     var failed
@@ -96,6 +106,15 @@ function fromStream(db, methodName) {
       if (!failed) defer.resolve()
     })
 
-    return defer.promise
+    // augment stream with promise API
+    var promise = defer.promise
+    var pProto = promise.constructor.prototype
+    for (var p in pProto) {
+      if (__hop.call(pProto, p)) {
+        stream[p] = promise[p].bind(promise)
+      }
+    }
+
+    return stream
   }
 }
