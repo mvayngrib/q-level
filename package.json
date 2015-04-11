@@ -1,7 +1,7 @@
 {
-  "name": "level-promise",
-  "version": "1.3.1",
-  "description": "Promise'd LevelUp with Q, fork of nathan7/level-promise.",
+  "name": "q.level",
+  "version": "1.0.0",
+  "description": "Promise'd LevelUp with Q, originally a fork of nathan7/level-promise.",
   "main": "index.js",
   "scripts": {
     "test": "node test/*.js"
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/nathan7/level-promise.git"
+    "url": "git://github.com/mvayngrib/q-level.git"
   },
   "keywords": [
     "promise",
@@ -22,7 +22,7 @@
   "author": "Nathan Zadoks",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nathan7/level-promise/issues"
+    "url": "https://github.com/mvayngrib/q-level/issues"
   },
   "devDependencies": {
     "level": "^0.18.0",
