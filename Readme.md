@@ -90,6 +90,29 @@ db.put('a', 1, function(err) {
 })
 ```
 
+### Query engine support
+
+```js
+var level = require('level')
+var levelQuery = require('level-queryengine')
+var jsonQueryEngine = require('jsonquery-engine')
+var promisify = require('q-level')
+
+db = levelQuery(level('my.db', { valueEncoding: 'json' }))
+db.query.use(jsonQueryEngine())
+// IMPORTANT TO PROMISIFY LAST!
+promisify(db)
+promisify(db, 'query', { type: 'readable' })
+
+db.query({ happy: { $in: ['very', 'not so much'] }})
+  .progress(function(val) {
+    // do stuff
+  })
+  .done(function() {
+    // do other stuff
+  })
+```
+
 ## License
 
   MIT

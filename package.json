@@ -25,7 +25,9 @@
     "url": "https://github.com/mvayngrib/q-level/issues"
   },
   "devDependencies": {
+    "jsonquery-engine": "^1.0.2",
     "level": "^0.18.0",
+    "level-queryengine": "^3.0.1",
     "level-sublevel": "^6.4.6",
     "rimraf": "^2.3.2",
     "tape": "^4.0.0"

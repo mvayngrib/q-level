@@ -8,8 +8,35 @@ var __hop = {}.hasOwnProperty
 exports = module.exports = install
 exports.install = install
 
-function install(db) {
-  _install(db, new Manifest(db))
+var special = {
+  batch: function promisifyBatch(db) {
+    var orig = db.batch.bind(db)
+    db.batch = function() {
+      if (arguments.length) return callSubstitute(this, orig, arguments)
+      // TODO: remove throw err when https://github.com/dominictarr/level-hooks/issues/7 is resolved
+      else throw new Error('chained form is not supported yet')
+
+      var batch = orig.call(db)
+      batch.write = Q.nbind(batch.write, batch)
+      return batch
+    }
+  },
+  query: function promisifyQuery(db) {
+    var use = db.query.use
+    var engine = db.query.engine
+
+    fromStream(db, 'query')
+
+    if (use) db.query.use = use
+    if (engine) db.query.engine = engine
+  }
+}
+
+function install(db, manifest, methodName) {
+  if (methodName) promisifyMethod.apply(null, arguments)
+  else if (manifest) _install.apply(null, arguments)
+  else _install(db, new Manifest(db))
+
   return db
 }
 
@@ -20,24 +47,7 @@ function _install(db, manifest) {
   for (var methodName in methods) {
     if (!__hop.call(methods, methodName)) continue
 
-    if (methodName === 'batch') {
-      promisifyBatch(db)
-      continue
-    }
-
-    var method = methods[methodName]
-    switch (method.type) {
-      case 'async':
-        substitute(db, methodName)
-        break
-      case 'readable':
-      case 'writable':
-        fromStream(db, methodName)
-        break
-      case 'object':
-        _install(db[methodName], method)
-        break
-    }
+    promisifyMethod(db, methodName, methods[methodName])
   }
 
   var sublevels = manifest.sublevels || {}
@@ -58,16 +68,26 @@ function _install(db, manifest) {
   }
 }
 
-function promisifyBatch(db) {
-  var orig = db.batch.bind(db)
-  db.batch = function() {
-    if (arguments.length) return callSubstitute(this, orig, arguments)
-    // TODO: remove throw err when https://github.com/dominictarr/level-hooks/issues/7 is resolved
-    else throw new Error('chained form is not supported yet')
+function promisifyMethod(db, methodName, manifest) {
+  if (!(methodName in db)) return
 
-    var batch = orig.call(db)
-    batch.write = Q.nbind(batch.write, batch)
-    return batch
+  if (special[methodName]) {
+    return special[methodName](db)
+  }
+
+  switch (manifest.type) {
+    case 'async':
+      substitute(db, methodName)
+      break
+    case 'readable':
+      fromStream(db, methodName)
+      break;
+    case 'writable':
+      // not supported
+      break
+    case 'object':
+      _install(db[methodName], manifest)
+      break
   }
 }
 
