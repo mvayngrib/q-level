@@ -122,7 +122,7 @@ function fromStream(db, methodName) {
       defer.reject(err)
     })
 
-    stream.on('close', function() {
+    stream.on('end', function() {
       if (!failed) defer.resolve()
     })
 
