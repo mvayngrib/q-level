@@ -29,7 +29,7 @@ _originally a fork of [nathan7/level-promise](https://github.com/nathan7/level-p
 ```js
 var level = require('level')
 var promisify = require('q-level')
-var db = promisify(level('my.db'), { valueEncoding: 'json' })
+var db = promisify(level('my.db', { valueEncoding: 'json' }))
 var contents = {}
 
 db.put('a', 1)
