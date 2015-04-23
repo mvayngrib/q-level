@@ -7,8 +7,7 @@
     "test": "node test"
   },
   "dependencies": {
-    "level-manifest": "^1.2.0",
-    "q": "^1.2.0"
+    "level-manifest": "^1.2.0"
   },
   "repository": {
     "type": "git",
@@ -25,10 +24,12 @@
     "url": "https://github.com/mvayngrib/q-level/issues"
   },
   "devDependencies": {
+    "bluebird": "^2.9.24",
     "jsonquery-engine": "^1.0.2",
     "level": "^0.18.0",
     "level-queryengine": "^3.0.1",
     "level-sublevel": "^6.4.6",
+    "q": "^1.2.0",
     "rimraf": "^2.3.2",
     "tape": "^4.0.0"
   }
