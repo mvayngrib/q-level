@@ -102,7 +102,7 @@ function callSubstitute(ctx, orig, args) {
   if (typeof args[args.length - 1] === 'function')
     return orig.apply(ctx, args)
   else
-    return Q.nfapply(orig, args)
+    return Q.nfapply(orig, Array.prototype.slice.call(args))
 }
 
 function fromStream(db, methodName) {
